@@ -1,0 +1,24 @@
+# NetBeans specific
+**/nbproject/private/
+**/build/
+**/dist/
+**/nbdist/
+**/.nb-gradle/
+
+# Compiled class files
+**/*.class
+
+# Log files
+**/*.log
+
+# Package Files
+**/*.jar
+**/*.war
+**/*.nar
+**/*.ear
+**/*.zip
+**/*.tar.gz
+**/*.rar
+
+# Virtual Machine crashes
+hs_err_pid*
