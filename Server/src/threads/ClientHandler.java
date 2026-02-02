@@ -47,6 +47,13 @@ public class ClientHandler extends Thread {
                         case LOGIN:
                             Korisnik loginRequest = (Korisnik) request.getArgument();
                             Korisnik ulogovan = Controller.getInstance().login(loginRequest.getUsername(), loginRequest.getPassword());
+                            for (ClientHandler ch : ServerThread.klijenti) {
+                                if (ch.getUlogovaniKorisnik() != null) {
+                                    if (ch.getUlogovaniKorisnik().getJmbg().equals(ulogovan.getJmbg())) {
+                                        throw new Exception("Korisnik je već ulogovan na drugom mestu!");
+                                    }
+                                }
+                            }
                             this.ulogovaniKorisnik = ulogovan;
                             response.setResult(ulogovan);
                             break;
@@ -84,6 +91,7 @@ public class ClientHandler extends Thread {
             }
         } catch (Exception e) {
             System.out.println("Klijent se diskonektovao.");
+            ServerThread.klijenti.remove(this);
         }
     }
 
@@ -96,5 +104,13 @@ public class ClientHandler extends Thread {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public Korisnik getUlogovaniKorisnik() {
+        return ulogovaniKorisnik;
+    }
+
+    public void setUlogovaniKorisnik(Korisnik ulogovaniKorisnik) {
+        this.ulogovaniKorisnik = ulogovaniKorisnik;
     }
 }

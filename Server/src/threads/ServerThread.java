@@ -17,7 +17,7 @@ import java.util.List;
 public class ServerThread extends Thread {
 
     private ServerSocket serverSocket;
-    private List<ClientHandler> klijenti;
+    public static List<ClientHandler> klijenti;
 
     public ServerThread() {
         try {

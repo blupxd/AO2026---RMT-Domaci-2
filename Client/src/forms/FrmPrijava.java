@@ -160,18 +160,6 @@ public class FrmPrijava extends javax.swing.JFrame {
             sdf.setLenient(false);
             Date datumVol = sdf.parse(txtDatumVolontiranja.getText());
 
-            Date danas = new Date();
-            Date finale = sdf.parse("01.02.2026");
-
-            if (datumVol.before(danas)) {
-                JOptionPane.showMessageDialog(this, "Datum volontiranja mora biti u budućnosti!");
-                return;
-            }
-            if (datumVol.after(finale)) {
-                JOptionPane.showMessageDialog(this, "Turnir se završava 01.02.2026!");
-                return;
-            }
-
             Prijava p;
 
             if (this.prijavaZaIzmenu != null) {

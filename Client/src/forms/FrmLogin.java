@@ -5,6 +5,7 @@
 package forms;
 
 import domain.Korisnik;
+import java.util.UUID;
 import javax.swing.JOptionPane;
 
 /**
@@ -38,6 +39,7 @@ public class FrmLogin extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         btnRegistracija = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Prijava korisnika");
@@ -54,26 +56,28 @@ public class FrmLogin extends javax.swing.JFrame {
         btnRegistracija.setText("Register");
         btnRegistracija.addActionListener(this::btnRegistracijaActionPerformed);
 
+        jButton1.setText("Guest");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(77, 77, 77)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(txtPassword)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(txtPassword)
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(10, 10, 10))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(133, 133, 133)
-                        .addComponent(btnRegistracija)))
+                        .addComponent(btnRegistracija)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -92,7 +96,9 @@ public class FrmLogin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRegistracija)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegistracija)
+                    .addComponent(jButton1))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -112,13 +118,30 @@ public class FrmLogin extends javax.swing.JFrame {
             this.dispose();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Greška: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnRegistracijaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistracijaActionPerformed
         new FrmRegistracija(this, true).setVisible(true);
     }//GEN-LAST:event_btnRegistracijaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            Korisnik guest = new Korisnik("Guest", "Mode", "0000000000000", "guest", "guest", "guest");
+            Korisnik k = communication.Communication.getInstance().login(guest.getUsername(), guest.getPassword());
+
+            JOptionPane.showMessageDialog(this, "Prijavili ste se kao Guest!");
+
+            new FrmPrijava(k).setVisible(true);
+            this.dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -148,6 +171,7 @@ public class FrmLogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnRegistracija;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

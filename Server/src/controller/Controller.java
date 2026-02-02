@@ -10,7 +10,9 @@ import forms.FrmServer;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,7 +32,7 @@ public class Controller {
         prijave = new ArrayList<>();
         ucitajPodatke();
         if (korisnici.isEmpty()) {
-            korisnici.add(new Korisnik("Matija", "Stefanovic", "1234567890123", "admin@gmail.com", "admin", "admin"));
+            korisnici.add(new Korisnik("Guest", "Mode", "0000000000000", "guest", "guest", "guest"));
             sacuvajPodatke();
         }
     }
@@ -100,36 +102,40 @@ public class Controller {
     }
 
     private void proveriOgranicenja(Prijava nova) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String noviDatum = sdf.format(nova.getDatumVolontiranja());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        Date datumVol = nova.getDatumVolontiranja();
+        Date danasSaVremenom = new Date();
+        Date danas = sdf.parse(sdf.format(danasSaVremenom));
+        Date finale = sdf.parse("05.02.2026");
+
+        if (datumVol.before(danas)) {
+            throw new Exception("Datum volontiranja mora biti u budućnosti!");
+        }
+
+        if (datumVol.after(finale)) {
+            throw new Exception("Turnir se završava " + sdf.format(finale) + "!");
+        }
+
+        String noviDatumStr = sdf.format(datumVol);
+
         List<String> koriscenePozicije = new ArrayList<>();
+        int brVecernjih = 0;
+        int brPopodnevnih = 0;
 
         for (Prijava p : prijave) {
+            if (p.getId().equals(nova.getId())) {
+                continue;
+            }
             if (p.getKorisnik().getJmbg().equals(nova.getKorisnik().getJmbg())) {
 
                 String postojeciDatum = sdf.format(p.getDatumVolontiranja());
-                if (postojeciDatum.equals(noviDatum)) {
-                    throw new Exception("Već imate prijavu za ovaj datum (" + sdf.format(nova.getDatumVolontiranja()) + ")!");
+                if (postojeciDatum.equals(noviDatumStr)) {
+                    throw new Exception("Već imate prijavu za ovaj datum (" + postojeciDatum + ")!");
                 }
 
                 String pozicija = p.getPozicija().toString();
                 if (!koriscenePozicije.contains(pozicija)) {
                     koriscenePozicije.add(pozicija);
-                }
-            }
-        }
-        String novaPozicija = nova.getPozicija().toString();
-
-        if (koriscenePozicije.size() >= 2 && !koriscenePozicije.contains(novaPozicija)) {
-            throw new Exception("Možete birati najviše 2 različite pozicije tokom turnira! Već ste birali: " + koriscenePozicije);
-        }
-        int brVecernjih = 0;
-        int brPopodnevnih = 0;
-
-        for (Prijava p : prijave) {
-            if (p.getKorisnik().getJmbg().equals(nova.getKorisnik().getJmbg())) {
-                if (p.getId().equals(nova.getId())) {
-                    continue;
                 }
 
                 String smena = p.getSmena().toString();
@@ -139,6 +145,11 @@ public class Controller {
                     brPopodnevnih++;
                 }
             }
+        }
+
+        String novaPozicija = nova.getPozicija().toString();
+        if (koriscenePozicije.size() >= 2 && !koriscenePozicije.contains(novaPozicija)) {
+            throw new Exception("Možete birati najviše 2 različite pozicije tokom turnira! Već ste birali: " + koriscenePozicije);
         }
 
         String novaSmena = nova.getSmena().toString();

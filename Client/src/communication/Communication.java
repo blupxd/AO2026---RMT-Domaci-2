@@ -9,6 +9,7 @@ import domain.Korisnik;
 import domain.Prijava;
 import transfer.Request;
 import cons.Operation;
+import java.io.IOException;
 import transfer.Response;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -33,8 +34,10 @@ public class Communication {
             socket = new Socket("localhost", 9000);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Greška pri konenkciji");
+            exitSocket();
         }
     }
 
@@ -121,6 +124,22 @@ public class Communication {
         Response response = sendRequest(Operation.EDIT_APPLICATION, p);
         if (response.getException() != null) {
             throw response.getException();
+        }
+    }
+
+    private void exitSocket() {
+        try {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+            if (socket != null || !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException ex) {
+            System.getLogger(Communication.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 }
